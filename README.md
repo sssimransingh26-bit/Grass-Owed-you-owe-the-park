@@ -1,4 +1,4 @@
-# Grass Ledger
+# Grass Owed: You owe the park
 
 > Tracks how much outdoor time you owe, finds the best free gap in your day, and nudges you to go outside with short, funny notifications.
 
