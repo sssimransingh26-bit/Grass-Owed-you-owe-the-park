@@ -1,0 +1,17 @@
+{
+  "place": "Jaipur",
+  "lat": 26.91,
+  "lon": 75.79,
+  "source": "Open-Meteo historical weather API",
+  "history_from": "2022-09-30",
+  "history_to": "2026-09-30",
+  "generated": "2026-10-07",
+  "holdout_months": 12,
+  "train_rows": 26328,
+  "tabpfn_train_sample": 10000,
+  "holdout_rows_evaluated": 5000,
+  "mae_baseline_c": 2.34,
+  "mae_tabpfn_c": 2.303,
+  "tabpfn_version": "9.1.0",
+  "sklearn_version": "1.6.1"
+}
