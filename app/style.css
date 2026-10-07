@@ -1,0 +1,39 @@
+:root {
+  --bg: #f4f8f1; --card: #ffffff; --ink: #1b2a1b; --muted: #5b6b5b;
+  --accent: #2e7d32; --accent-ink: #ffffff; --warn: #b3541e; --line: #dbe6d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #101a12; --card: #182419; --ink: #e6f0e3; --muted: #9db39d;
+          --accent: #66bb6a; --accent-ink: #0d1a0f; --warn: #ffab70; --line: #2a3b2c; }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+#app { max-width: 520px; margin: 0 auto; padding: 16px 16px 40px;
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
+h1 { font-size: 1.5rem; margin: 4px 0 0; }
+.sub { color: var(--muted); margin: 0 0 14px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 16px; margin: 12px 0; }
+.label { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.big { font-size: 3rem; font-weight: 700; line-height: 1.1; margin: 4px 0; }
+.big small { font-size: 1rem; font-weight: 500; color: var(--muted); }
+.bar { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 8px 0 4px; }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+button, select, input, textarea { font: inherit; color: inherit; }
+button { border: 1px solid var(--line); background: var(--card); border-radius: 12px;
+  padding: 10px 14px; cursor: pointer; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 2px; }
+.nudge { font-size: 1.1rem; margin: 6px 0; }
+.meta { color: var(--muted); font-size: .85rem; }
+.warn { color: var(--warn); }
+details { margin: 12px 0; }
+summary { cursor: pointer; font-weight: 600; padding: 8px 0; }
+.field { display: grid; gap: 4px; margin: 12px 0; }
+.field input, .field select, .field textarea { border: 1px solid var(--line); background: var(--bg);
+  border-radius: 10px; padding: 8px 10px; width: 100%; }
+.foot { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 18px; }

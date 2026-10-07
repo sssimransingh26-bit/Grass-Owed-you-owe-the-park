@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "source": "HAND-WRITTEN PLACEHOLDER. Replace with the Gemma-generated bank (about 8 situations x 3 tones x 10 lines) before claiming Gemma in the write-up.",
+    "slots": ["minutes", "temp", "gap_start", "best_time", "spot"]
+  },
+  "bank": {
+    "go_now": {
+      "gentle": [
+        "You are free right now and it is {temp}°C outside. A short walk would be lovely.",
+        "Nice moment to step out: {temp}°C and nothing on your calendar. Even 10 minutes helps."
+      ],
+      "funny": [
+        "Debt is {minutes} minutes. The park has been asking about you.",
+        "Your calendar is empty and it is {temp}°C. The sun has a vacancy and you have a debt."
+      ],
+      "cheeky": [
+        "{minutes} minutes owed. Put the phone down and go touch some grass.",
+        "You are free, it is {temp}°C, and the only thing stopping you is you."
+      ]
+    },
+    "gap_soon": {
+      "gentle": [
+        "A free gap opens at {gap_start}. That could be a good time to step outside.",
+        "Around {gap_start} you are free and the weather should be pleasant."
+      ],
+      "funny": [
+        "Your {gap_start} gap is booked. The park is the only guest.",
+        "{gap_start}: you, the outdoors, and {minutes} minutes of debt. Do not stand it up."
+      ],
+      "cheeky": [
+        "Free at {gap_start}. No excuses, only shoes.",
+        "At {gap_start} you have no meeting, no deadline and no alibi."
+      ]
+    },
+    "too_hot_wait": {
+      "gentle": [
+        "It is {temp}°C out. Staying in is sensible. Try again around {best_time}.",
+        "Too hot right now. A better window is around {best_time}."
+      ],
+      "funny": [
+        "It is {temp} degrees. Staying in is the correct decision. Come back at {best_time}.",
+        "The sun is in a mood at {temp}°C. Negotiate with it at {best_time}."
+      ],
+      "cheeky": [
+        "{temp}°C? Even the grass is hiding. Go at {best_time}, not now.",
+        "Skipping the heat is not an excuse, it is strategy. Be outside by {best_time}."
+      ]
+    },
+    "too_cold_wait": {
+      "gentle": [
+        "It is only {temp}°C. Wrap up warm, or wait until {best_time}.",
+        "Chilly out there at {temp}°C. A warmer window is around {best_time}."
+      ],
+      "funny": [
+        "{temp}°C. Your jacket has been waiting for this moment. Or try {best_time}.",
+        "It is {temp} degrees. Grass is crunchy. Maybe {best_time}."
+      ],
+      "cheeky": [
+        "{temp}°C is not a reason, it is a dress code. Layer up or go at {best_time}.",
+        "Cold? Wear the sweater. Debt is {minutes} minutes and it does not care."
+      ]
+    },
+    "rainy": {
+      "gentle": [
+        "Rain is likely at this hour. Try again around {best_time}.",
+        "It may be wet outside. A drier window is around {best_time}."
+      ],
+      "funny": [
+        "Rain is likely. The park is closed for watering. Try {best_time}.",
+        "The sky is doing laundry. Check back around {best_time}."
+      ],
+      "cheeky": [
+        "A little rain never hurt anyone. Still, {best_time} looks drier.",
+        "Umbrella or {best_time}. Your choice, but you still owe {minutes} minutes."
+      ]
+    },
+    "debt_high": {
+      "gentle": [
+        "You owe {minutes} minutes outside. Even 10 minutes would shrink it.",
+        "The balance is {minutes} minutes. A short break outdoors would help."
+      ],
+      "funny": [
+        "Debt is {minutes} minutes. The park has started sending reminders.",
+        "You owe the outdoors {minutes} minutes. Interest is accruing in vitamin D."
+      ],
+      "cheeky": [
+        "{minutes} minutes in the red. Your future self wants a word.",
+        "{minutes} minutes owed. The couch is not going to pay it for you."
+      ]
+    }
+  }
+}

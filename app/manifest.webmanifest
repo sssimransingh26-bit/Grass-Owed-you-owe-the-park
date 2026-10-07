@@ -1,0 +1,15 @@
+{
+  "name": "Grass Owed",
+  "short_name": "Grass Owed",
+  "description": "Tracks the outdoor time you owe and nudges you to go outside.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f8f1",
+  "theme_color": "#2e7d32",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
