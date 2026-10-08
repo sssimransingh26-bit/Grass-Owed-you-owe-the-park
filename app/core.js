@@ -9,6 +9,7 @@
   var DAY_END_H = 22;    // nothing from 22:00
   var MAX_PER_DAY = 3;
   var COOLDOWN_MIN = 90;
+  var MIN_DEBT_FOR_NUDGE = 10; // do not nudge for tiny debts
 
   function pad(n) { return String(n).padStart(2, '0'); }
   function dayKey(ms) {
@@ -22,18 +23,20 @@
   }
 
   // ---------- Debt ledger ----------
-  // Each day adds the goal; minutes outside subtract; debt never goes below zero
-  // and carries over to the next day.
-  function computeDebt(days, goalMin, startKey, todayMs) {
+  // Screen time creates debt: every minute on screen adds `ratio` minutes owed
+  // (for example 0.2 = 2 minutes outside per 10 minutes on screen). Minutes spent
+  // outside pay it back. Debt never goes below zero and carries over to the next day.
+  function computeDebt(outDays, screenDays, ratio, startKey, todayMs) {
     var p = startKey.split('-').map(Number);
     var cur = new Date(p[0], p[1] - 1, p[2]);
     var end = startOfDay(todayMs);
     var debt = 0;
     while (cur.getTime() <= end) {
-      debt = Math.max(0, debt + goalMin - (days[dayKey(cur.getTime())] || 0));
+      var k = dayKey(cur.getTime());
+      debt = Math.max(0, debt + (screenDays[k] || 0) * ratio - (outDays[k] || 0));
       cur.setDate(cur.getDate() + 1);
     }
-    return debt;
+    return Math.max(0, Math.ceil(debt - 1e-9));
   }
 
   // ---------- ICS parsing ----------
@@ -213,6 +216,7 @@
       var n = ctx.nudgeToday || { count: 0, lastAt: 0 };
       if (n.count >= MAX_PER_DAY) return null;                  // max 3 a day
       if (n.lastAt && ctx.nowMs - n.lastAt < COOLDOWN_MIN * MIN) return null; // cooldown
+      if (ctx.debt < MIN_DEBT_FOR_NUDGE) return null;           // debt too small
     }
     if (ctx.debt <= 0) return null;
     return situation(ctx);
@@ -241,7 +245,7 @@
   }
 
   root.Core = {
-    MIN: MIN, DAY: DAY, MAX_PER_DAY: MAX_PER_DAY, COOLDOWN_MIN: COOLDOWN_MIN,
+    MIN: MIN, DAY: DAY, MAX_PER_DAY: MAX_PER_DAY, COOLDOWN_MIN: COOLDOWN_MIN, MIN_DEBT_FOR_NUDGE: MIN_DEBT_FOR_NUDGE,
     dayKey: dayKey, startOfDay: startOfDay, atHour: atHour, fmtTime: fmtTime,
     computeDebt: computeDebt, parseICS: parseICS, icsToMs: icsToMs,
     comfortAt: comfortAt, bestWindow: bestWindow, nextBestWindow: nextBestWindow,

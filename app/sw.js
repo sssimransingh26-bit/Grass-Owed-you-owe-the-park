@@ -1,6 +1,6 @@
 // Service worker: caches the app shell and data so the app opens offline.
 // Stale-while-revalidate: serve from cache, refresh in the background.
-const CACHE = 'grass-owed-v1';
+const CACHE = 'grass-owed-v2';
 const ASSETS = [
   './', 'index.html', 'style.css', 'core.js', 'app.js', 'manifest.webmanifest',
   'data/comfort_table.json', 'data/nudge_bank.json',

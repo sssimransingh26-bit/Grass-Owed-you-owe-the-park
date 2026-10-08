@@ -18,7 +18,8 @@
 
   function defaults() {
     return {
-      goalMin: 30, tone: 'funny', startKey: C.dayKey(nowMs()),
+      outMin: 2, perMin: 10, screen: {}, screenSession: null,
+      tone: 'funny', startKey: C.dayKey(nowMs()),
       days: {}, sessionStart: null, events: [],
       spots: ['Nearest park', 'Tree-lined street', 'Rooftop or garden'],
       notify: false, nudges: {}, lastNudge: null
@@ -40,7 +41,7 @@
   }
 
   // ---------- derived values ----------
-  function liveDays() {
+  function liveOut() {
     var d = Object.assign({}, state.days);
     if (state.sessionStart) {
       var k = C.dayKey(nowMs());
@@ -48,8 +49,18 @@
     }
     return d;
   }
-  function minutesToday() { return liveDays()[C.dayKey(nowMs())] || 0; }
-  function debtNow() { return C.computeDebt(liveDays(), state.goalMin, state.startKey, nowMs()); }
+  function liveScreen() {
+    var d = Object.assign({}, state.screen);
+    if (state.screenSession) {
+      var k = C.dayKey(nowMs());
+      d[k] = (d[k] || 0) + Math.floor((nowMs() - state.screenSession) / C.MIN);
+    }
+    return d;
+  }
+  function ratio() { return state.outMin / Math.max(1, state.perMin); }
+  function minutesToday() { return liveOut()[C.dayKey(nowMs())] || 0; }
+  function screenToday() { return liveScreen()[C.dayKey(nowMs())] || 0; }
+  function debtNow() { return C.computeDebt(liveOut(), liveScreen(), ratio(), state.startKey, nowMs()); }
   function pickSpot() {
     var spots = state.spots.filter(Boolean);
     if (!spots.length) return 'outside';
@@ -116,7 +127,9 @@
     var now = nowMs();
     var debt = debtNow();
     var today = minutesToday();
-    var pct = Math.min(100, Math.round((today / Math.max(1, state.goalMin)) * 100));
+    var scr = screenToday();
+    var accrued = scr * ratio();
+    var pct = accrued > 0 ? Math.min(100, Math.round((today / accrued) * 100)) : 0;
     var nb = C.nextBestWindow(state.events, table, now, debt);
     var cNow = C.comfortAt(table, now);
     var n = state.lastNudge;
@@ -144,12 +157,17 @@
       '<section class="card"><div class="label">Outdoor debt</div>' +
       '<div class="big">' + debt + ' <small>min owed</small></div>' +
       '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div>' +
-      '<div class="meta">Today: ' + today + ' of ' + state.goalMin + ' min outside</div>' +
+      '<div class="meta">Today: ' + scr + ' min on screen · ' + today + ' min outside</div>' +
       '<div class="row">' +
       (state.sessionStart
         ? '<button class="primary" data-act="back">I\'m back</button>'
         : '<button class="primary" data-act="out">I\'m out</button>') +
-      '<button data-act="add10">+10 min</button></div></section>' +
+      '<button data-act="add10">+10 min outside</button></div>' +
+      '<div class="row">' +
+      (state.screenSession
+        ? '<button class="primary" data-act="sback">Stop screen session</button>'
+        : '<button data-act="sout">Start screen session</button>') +
+      '<button data-act="screen10">+10 min screen</button></div></section>' +
 
       '<section class="card"><div class="label">Best gap</div>' + gapHtml + weatherHtml + '</section>' +
 
@@ -158,7 +176,8 @@
       '<div class="row"><button data-act="preview">Show me a nudge</button></div></section>' +
 
       '<details class="card"><summary>Settings</summary>' +
-      '<label class="field">Daily goal (minutes)<input type="number" min="5" max="240" step="5" data-set="goal" value="' + state.goalMin + '"></label>' +
+      '<label class="field">Minutes to walk<input type="number" min="1" max="30" data-set="outMin" value="' + state.outMin + '"></label>' +
+      '<label class="field">for every this many minutes on screen<input type="number" min="5" max="120" step="5" data-set="perMin" value="' + state.perMin + '"></label>' +
       '<label class="field">Tone<select data-set="tone">' +
       ['gentle', 'funny', 'cheeky'].map(function (t) { return '<option' + (t === state.tone ? ' selected' : '') + '>' + t + '</option>'; }).join('') +
       '</select></label>' +
@@ -189,6 +208,16 @@
       var k = C.dayKey(nowMs());
       state.days[k] = (state.days[k] || 0) + mins;
       state.sessionStart = null;
+    } else if (act === 'sout') {
+      state.screenSession = nowMs();
+    } else if (act === 'sback') {
+      var sm = Math.max(1, Math.round((nowMs() - state.screenSession) / C.MIN));
+      var sk = C.dayKey(nowMs());
+      state.screen[sk] = (state.screen[sk] || 0) + sm;
+      state.screenSession = null;
+    } else if (act === 'screen10') {
+      var sk2 = C.dayKey(nowMs());
+      state.screen[sk2] = (state.screen[sk2] || 0) + 10;
     } else if (act === 'add10') {
       var k2 = C.dayKey(nowMs());
       state.days[k2] = (state.days[k2] || 0) + 10;
@@ -219,7 +248,8 @@
   document.addEventListener('change', function (e) {
     var t = e.target.getAttribute && e.target.getAttribute('data-set');
     if (!t) return;
-    if (t === 'goal') state.goalMin = Math.min(240, Math.max(5, parseInt(e.target.value, 10) || 30));
+    if (t === 'outMin') state.outMin = Math.min(30, Math.max(1, parseInt(e.target.value, 10) || 2));
+    else if (t === 'perMin') state.perMin = Math.min(120, Math.max(5, parseInt(e.target.value, 10) || 10));
     else if (t === 'tone') state.tone = e.target.value;
     else if (t === 'spots') {
       state.spots = e.target.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 5);
