@@ -3,9 +3,7 @@
 > Tracks how much outdoor time you owe, finds the best free gap in your day, and nudges you to go outside with short, funny notifications.
 
 Built for the **Hacktoberfest Open-Source AI Challenge, Week 1: Touch Grass** (DEV).
-Project started 7 Oct 2026, inside the challenge window (5-11 Oct 2026). Any commits after the deadline will be listed under "Post-deadline commits" below.
-
-**Status:** work in progress.
+Project started 7 Oct 2026, inside the challenge window (5-11 Oct 2026). 
 
 ## What it is
 
@@ -48,14 +46,6 @@ Open `notebooks/comfort_table.ipynb` in Colab, edit `PLACE`, `LAT` and `LON` in 
 ## Privacy
 
 Calendar parsing, the ledger and check-ins stay on the device. Only a situation summary can leave the device, and only on the optional live path, which can be turned off.
-
-## Sponsor technology
-
-To be filled in with only the categories that genuinely end up working.
-
-## Post-deadline commits
-
-None yet.
 
 ## Credits
 
