@@ -59,8 +59,7 @@ Open http://localhost:8000.
 The app logic (debt ledger, `.ics` parser, gap finder, rules engine) is one pure module with 8 Node tests.
 
 ```bash
-# TODO: replace with your real command, for example:
-node --test
+node tests/core.test.js
 ```
 
 ## How it works
