@@ -146,9 +146,9 @@ The app handles your calendar and your screen habits, which is data you don't wa
 
 ## Credits and licences
 
-- Weather data: [Open-Meteo](https://open-meteo.com)
-- The comfort table was generated with TabPFN-3.5 by Prior Labs GmbH under the TabPFN-3.5 Non-Commercial License. This is a hackathon project, not a product.
-- Gemma 4 by Google DeepMind (Apache-2.0)
+* Weather data: [Open-Meteo](https://open-meteo.com/)
+* The comfort table was generated with TabPFN-3.5 by Prior Labs GmbH under the TabPFN-3.5 Non-Commercial License. This is a hackathon project, not a product.
+* Gemma 4 by Google DeepMind (Apache-2.0)
+* My code: MIT, see [LICENSE](LICENSE)
 
 See `NOTICE.md` for details.
-<!-- TODO: add a LICENSE file for your own code, and mention it here. -->
