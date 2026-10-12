@@ -18,7 +18,7 @@
 
   function defaults() {
     return {
-      outMin: 2, perMin: 10, screen: {}, screenSession: null,
+      outMin: 2, perMin: 10, screen: {}, screenSession: null, autoScreen: false,
       tone: 'funny', startKey: C.dayKey(nowMs()),
       days: {}, sessionStart: null, events: [],
       spots: ['Nearest park', 'Tree-lined street', 'Rooftop or garden'],
@@ -76,6 +76,51 @@
     }, extra || {});
   }
 
+  // ---------- laptop auto screen time (Idle Detection API, Chrome/Edge desktop) ----------
+  // Counts minutes when you are actively using the computer (any app) and the screen is
+  // unlocked. Works only while this page stays open. Minimum idle threshold is 60 seconds.
+  var idle = { det: null, ctrl: null, since: null, carry: 0, running: false };
+  function idleSupported() { return 'IdleDetector' in window; }
+  function isActive(d) { return d.userState === 'active' && d.screenState === 'unlocked'; }
+  function flushIdle() {
+    if (idle.since == null) return;
+    var now = nowMs();
+    idle.carry += now - idle.since;
+    idle.since = now;
+    var mins = Math.floor(idle.carry / C.MIN);
+    if (mins > 0) {
+      idle.carry -= mins * C.MIN;
+      if (!state.screenSession) {   // a manual session already counts this time
+        var k = C.dayKey(now);
+        state.screen[k] = (state.screen[k] || 0) + mins;
+        save();
+      }
+    }
+  }
+  function startIdle() {
+    if (!idleSupported()) return Promise.resolve(false);
+    return IdleDetector.requestPermission().then(function (perm) {
+      if (perm !== 'granted') return false;
+      idle.ctrl = new AbortController();
+      idle.det = new IdleDetector();
+      idle.det.addEventListener('change', function () {
+        flushIdle();
+        idle.since = isActive(idle.det) ? nowMs() : null;
+        render();
+      });
+      return idle.det.start({ threshold: 60000, signal: idle.ctrl.signal }).then(function () {
+        idle.since = isActive(idle.det) ? nowMs() : null;
+        idle.running = true;
+        return true;
+      });
+    }).catch(function () { return false; });
+  }
+  function stopIdle() {
+    flushIdle();
+    if (idle.ctrl) idle.ctrl.abort();
+    idle.det = null; idle.since = null; idle.running = false;
+  }
+
   // ---------- nudges ----------
   function makeNudge(c) {
     var sit = C.decideNudge(c);
@@ -102,6 +147,7 @@
 
   function tick() {
     if (!table) return;
+    flushIdle();
     var c = ctx();
     var n = makeNudge(c);
     if (n) {
@@ -157,7 +203,8 @@
       '<section class="card"><div class="label">Outdoor debt</div>' +
       '<div class="big">' + debt + ' <small>min owed</small></div>' +
       '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div>' +
-      '<div class="meta">Today: ' + scr + ' min on screen · ' + today + ' min outside</div>' +
+      '<div class="meta">Today: ' + scr + ' min on screen · ' + today + ' min outside' +
+      (idle.running ? ' · laptop auto-tracking on' : '') + '</div>' +
       '<div class="row">' +
       (state.sessionStart
         ? '<button class="primary" data-act="back">I\'m back</button>'
@@ -186,8 +233,11 @@
       '<p class="meta">' + state.events.length + ' events loaded. Only start and end times are kept; titles are never read. ' +
       'Repeating events are expanded for the next 14 days, so re-import now and then.</p>' +
       '<div class="row"><button data-act="clearcal">Clear calendar</button>' +
+      '<button data-act="idle">' + (idle.running ? 'Turn laptop auto-tracking off' : 'Turn laptop auto-tracking on') + '</button>' +
       '<button data-act="notify">' + (state.notify ? 'Turn notifications off' : 'Turn notifications on') + '</button>' +
       '<button data-act="reset">Reset everything</button></div>' +
+      '<p class="meta">Laptop auto-tracking counts minutes you are actively using the computer (any app) while this page stays open. ' +
+      'It needs Chrome or Edge on a laptop or desktop. On a phone, use the screen session buttons. Reading without touching the keyboard or mouse counts as idle after 60 seconds.</p>' +
       '<p class="meta">Notifications only fire while the app is open or running in the background; closed-app delivery is not guaranteed on every phone.</p>' +
       '</details>' +
 
@@ -228,6 +278,19 @@
       else flash = debtNow() <= 0 ? 'Debt is clear, so there is nothing to nudge about.' : 'Nothing worth saying at this moment.';
     } else if (act === 'clearcal') {
       state.events = [];
+    } else if (act === 'idle') {
+      if (idle.running) {
+        stopIdle(); state.autoScreen = false;
+      } else if (!idleSupported()) {
+        flash = 'Laptop auto-tracking needs Chrome or Edge on a laptop or desktop. Use the screen session buttons instead.';
+      } else {
+        startIdle().then(function (ok) {
+          state.autoScreen = ok;
+          if (!ok) flash = 'Permission was not granted, so auto-tracking is off.';
+          save(); render();
+        });
+        return;
+      }
     } else if (act === 'notify') {
       if (state.notify) { state.notify = false; }
       else if (!('Notification' in window)) { flash = 'This browser does not support notifications. In-app nudges still work.'; }
@@ -286,6 +349,7 @@
         .then(function () { offlineReady = true; render(); })
         .catch(function () { /* offline mode unavailable (e.g. not served over http/https) */ });
     }
+    if (state.autoScreen && idleSupported()) startIdle().then(function (ok) { if (ok) render(); });
     setInterval(tick, 60 * 1000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
   }
