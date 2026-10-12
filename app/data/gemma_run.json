@@ -1,0 +1,22 @@
+{
+  "model": "google/gemma-4-E2B-it",
+  "generated": "2026-10-12",
+  "gpu": "Tesla T4",
+  "dtype": "torch.bfloat16",
+  "transformers_version": "5.18.0",
+  "situations": 6,
+  "tones": 3,
+  "lines_per_cell": 10,
+  "lines_kept": 180,
+  "generation_calls": 18,
+  "raw_lines_returned": 181,
+  "lines_accepted": 180,
+  "acceptance_rate": 0.994,
+  "rejected_by_reason": {
+    "bad_placeholder": 1
+  },
+  "avg_seconds_per_call": 19.74,
+  "avg_seconds_per_accepted_line": 1.97,
+  "avg_tokens_per_call": 237.9,
+  "avg_line_length_chars": 59.7
+}
