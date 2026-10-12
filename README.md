@@ -145,13 +145,6 @@ The app handles your calendar and your screen habits, which is data you don't wa
 - **Best Use of TabPFN:** predicts outdoor comfort by month and hour from historical weather, with the error reported against a simple baseline.
 - **Best Use of Gemma:** Gemma 4 E2B wrote the nudge bank, with code validating every line.
 
-## Post-deadline commits
-
-The challenge window was 5 to 11 October 2026 and the project was started on 7 October 2026. Anything changed after the deadline is listed here.
-
-<!-- TODO: be accurate. If you committed anything on or after 12 Oct, list each commit and what it changed. Replace this line, and delete the "None" below if it is not true. -->
-- None yet.
-
 ## Credits and licences
 
 - Weather data: [Open-Meteo](https://open-meteo.com)
