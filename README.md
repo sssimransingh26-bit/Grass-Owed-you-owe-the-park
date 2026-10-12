@@ -8,7 +8,10 @@ Built for the [Hacktoberfest Open-Source AI Challenge, Week 1: Touch Grass](http
 - **Demo video:** https://youtu.be/xpw0j1YM93k
 - **Status:** working prototype that runs locally. It is not deployed to a public URL.
 
-![Grass Owed showing outdoor debt, the best gap in the day and a nudge](docs/screenshot-main.png)
+<img width="497" height="731" alt="ss3" src="https://github.com/user-attachments/assets/16872e31-8cea-4c68-818e-1cf1de8bcd18" />
+<img width="632" height="733" alt="ss1" src="https://github.com/user-attachments/assets/d7ca1d97-dd63-4bed-a1bf-aade900d3326" />
+<img width="533" height="732" alt="ss2" src="https://github.com/user-attachments/assets/ce136508-20ad-4316-abcf-cd79151e5d84" />
+
 <!-- TODO: save your first screenshot as docs/screenshot-main.png, or delete this line -->
 
 ## What it does
